@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>注册账号</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>用户注册</h2>
+    <div class="msg" id="tip"></div>
+    <form id="regForm">
+        <input type="text" id="username" placeholder="用户名" required>
+        <input type="password" id="password" placeholder="密码" required>
+        <button type="submit">注册</button>
+    </form>
+    <a href="index.html">已有账号？返回登录</a>
+
+    <script>
+        const tip = document.getElementById('tip');
+        const regForm = document.getElementById('regForm');
+
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('users')) || [];
+        }
+        function saveUsers(arr) {
+            localStorage.setItem('users', JSON.stringify(arr));
+        }
+
+        regForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const uname = document.getElementById('username').value.trim();
+            const pwd = document.getElementById('password').value.trim();
+            const users = getUsers();
+
+            if (users.find(u => u.username === uname)) {
+                tip.innerText = '用户名已存在';
+                return;
+            }
+            users.push({ username: uname, password: pwd });
+            saveUsers(users);
+            location.href = 'index.html';
+        })
+    </script>
+</body>
+</html>

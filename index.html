@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>登录</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>用户登录</h2>
+    <div class="msg" id="tip"></div>
+    <form id="loginForm">
+        <input type="text" id="username" placeholder="用户名" required>
+        <input type="password" id="password" placeholder="密码" required>
+        <button type="submit">登录</button>
+    </form>
+    <a href="register.html">没有账号？去注册</a>
+
+    <script>
+        const tip = document.getElementById('tip');
+        const loginForm = document.getElementById('loginForm');
+
+        // 获取本地用户数据
+        function getUsers() {
+            return JSON.parse(localStorage.getItem('users')) || [];
+        }
+
+        loginForm.addEventListener('submit', e => {
+            e.preventDefault();
+            const uname = document.getElementById('username').value.trim();
+            const pwd = document.getElementById('password').value.trim();
+            const users = getUsers();
+            const user = users.find(u => u.username === uname && u.password === pwd);
+            if (user) {
+                // 记录登录状态
+                localStorage.setItem('loginUser', JSON.stringify(user));
+                location.href = 'dashboard.html';
+            } else {
+                tip.innerText = '用户名或密码错误';
+            }
+        })
+    </script>
+</body>
+</html>

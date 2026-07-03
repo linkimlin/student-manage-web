@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>学生管理面板</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>学生信息列表</h2>
+    <a href="add.html"><button>添加新学生</button></a>
+    <table id="stuTable">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>姓名</th>
+                <th>学号</th>
+                <th>分数</th>
+                <th>操作</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+
+    <script>
+        // 登录校验
+        const loginUser = localStorage.getItem('loginUser');
+        if (!loginUser) location.href = 'index.html';
+
+        function getStudents() {
+            return JSON.parse(localStorage.getItem('students')) || [
+                {id:1,name:"张三",student_id:"2025001",score:92.5},
+                {id:2,name:"李四",student_id:"2025002",score:85.0},
+                {id:3,name:"王五",student_id:"2025003",score:78.0},
+                {id:4,name:"赵六",student_id:"2025004",score:96.0}
+            ];
+        }
+        function saveStudents(list) {
+            localStorage.setItem('students', JSON.stringify(list));
+        }
+
+        function renderTable() {
+            const list = getStudents();
+            const tbody = document.querySelector('#stuTable tbody');
+            tbody.innerHTML = '';
+            list.forEach(item => {
+                const tr = document.createElement('tr');
+                tr.innerHTML = `
+                    <td>${item.id}</td>
+                    <td>${item.name}</td>
+                    <td>${item.student_id}</td>
+                    <td>${item.score}</td>
+                    <td>
+                        <a href="edit.html?id=${item.id}"><button>编辑</button></a>
+                        <button class="del" onclick="delStu(${item.id})">删除</button>
+                    </td>
+                `;
+                tbody.appendChild(tr);
+            })
+        }
+
+        window.delStu = function(id) {
+            let list = getStudents();
+            list = list.filter(s => s.id !== id);
+            saveStudents(list);
+            renderTable();
+        }
+
+        renderTable();
+    </script>
+</body>
+</html>

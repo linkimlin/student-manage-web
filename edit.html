@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>编辑学生</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h2>编辑学生信息</h2>
+    <form id="editForm">
+        <input type="text" id="name" placeholder="姓名" required>
+        <input type="text" id="sid" placeholder="学号" required>
+        <input type="number" step="0.1" id="score" placeholder="分数" required>
+        <button type="submit">保存修改</button>
+    </form>
+    <a href="dashboard.html">返回列表</a>
+
+    <script>
+        if (!localStorage.getItem('loginUser')) location.href = 'index.html';
+
+        // 获取url参数id
+        const urlParams = new URLSearchParams(location.search);
+        const editId = Number(urlParams.get('id'));
+
+        function getStudents() {
+            return JSON.parse(localStorage.getItem('students')) || [];
+        }
+        function saveStudents(list) {
+            localStorage.setItem('students', JSON.stringify(list));
+        }
+
+        const list = getStudents();
+        const target = list.find(s => s.id === editId);
+        if (!target) location.href = 'dashboard.html';
+
+        // 回填数据
+        document.getElementById('name').value = target.name;
+        document.getElementById('sid').value = target.student_id;
+        document.getElementById('score').value = target.score;
+
+        document.getElementById('editForm').addEventListener('submit', e => {
+            e.preventDefault();
+            target.name = document.getElementById('name').value.trim();
+            target.student_id = document.getElementById('sid').value.trim();
+            target.score = parseFloat(document.getElementById('score').value);
+            saveStudents(list);
+            location.href = 'dashboard.html';
+        })
+    </script>
+</body>
+</html>
